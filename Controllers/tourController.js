@@ -37,7 +37,7 @@ exports.getAllTours = (req, res) => {
 
 exports.getTour = (req, res) => {
   const { id } = req.params;
-  const tour = tours.filter((tour) => tour.id === Number(id));
+  const tour = tours.filter((item) => item.id === Number(id));
 
   res.status(200).json({
     status: 'success',
@@ -49,6 +49,7 @@ exports.getTour = (req, res) => {
 
 exports.createTour = (req, res) => {
   const newID = tours.at(-1).id + 1;
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
   const newTour = { id: newID, ...req.body };
   tours.push(newTour);
 
