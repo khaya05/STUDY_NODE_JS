@@ -1,6 +1,7 @@
 const Tour = require('../Models/tourModel');
 const ApiFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/AppError');
 
 // aliasing "/popular"
 exports.aliasPopular = (req, res, next) => {
@@ -32,6 +33,10 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 
+  if (!tour) {
+    return next(new AppError('Invalid tour id', 404));
+  }
+  
   res.status(200).json({
     status: 'success',
     data: {
@@ -56,6 +61,10 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     new: true,
   });
 
+    if (!tour) {
+      return next(new AppError('Invalid tour id', 404));
+    }
+
   res.status(201).json({
     status: 'success',
     data: {
@@ -65,7 +74,11 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params);
+  const tour  = await Tour.findByIdAndDelete(req.params);
+
+    if (!tour) {
+      return next(new AppError('Invalid tour id', 404));
+    }
 
   res.status(204).json({
     status: 'success',
