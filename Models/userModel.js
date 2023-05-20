@@ -1,5 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,6 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password'],
     minlength: 8,
+    select: false,
   },
 
   confirmPassword: {
@@ -39,9 +42,25 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
+  //only run if passwod is modified
   if (!this.isModified('password')) return next();
-})
+
+  // hash password
+  this.password = await bcrypt.hash(this.password, 12);
+  // delete confirmPassword field
+  this.confirmPassword = undefined;
+  next();
+});
+
+// instance medthod, available on all User model
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  // built-in function to compare password, to hashed password
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
