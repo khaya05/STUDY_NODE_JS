@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "prod": "NODE_ENV=production nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "debugProd": "NODE_ENV=production ndb server.js"
   },
   "keywords": [],
   "author": "",
