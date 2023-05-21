@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -45,10 +46,32 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3. if ok, send token to client
-  const token = signToken(user._id)
+  const token = signToken(user._id);
 
   res.status(200).json({
     status: 'success',
-    token
+    token,
   });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1. get token, check if it exists
+  const { authorization } = req.headers;
+  let token = '';
+
+  if (authorization && authorization.startsWith('Bearer')) {
+    token = authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(new AppError('You are not logged in! Please log in!', 401));
+  }
+
+  // 2. validate/verify token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(decoded);
+  // 3. check if user exists
+
+  // 4. check if user changed password after token was issued
+  next();
 });
