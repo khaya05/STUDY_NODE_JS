@@ -74,7 +74,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour  = await Tour.findByIdAndDelete(req.params);
+  const tour  = await Tour.findByIdAndDelete(req.params.id);
 
     if (!tour) {
       return next(new AppError('Invalid tour id', 404));
