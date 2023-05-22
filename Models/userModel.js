@@ -40,6 +40,8 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords do not Match',
     },
   },
+
+  passwordChangedAt: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -53,13 +55,27 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// instance medthod, available on all User model
+// instance medthod, available on all User model, this => current document
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
 ) {
   // built-in function to compare password, to hashed password
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // false means NOT changed;
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
