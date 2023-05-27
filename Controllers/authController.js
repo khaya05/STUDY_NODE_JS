@@ -1,14 +1,16 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('../Models/userModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/AppError');
-const sendEmail = require('../utils/email');
+const User = require('./../models/userModel');
+const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
+const sendEmail = require('./../utils/email');
 
-const signToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
+};
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
@@ -105,7 +107,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.restrictTo = (...roles) => (req, res, next) => {
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
     // roles ['admin', 'lead-guide']. role='user'
     if (!roles.includes(req.user.role)) {
       return next(
@@ -115,6 +118,7 @@ exports.restrictTo = (...roles) => (req, res, next) => {
 
     next();
   };
+};
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on POSTed email

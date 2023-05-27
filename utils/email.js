@@ -1,30 +1,26 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (options) => {
-  // 1. create a transporter
-  const { EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, EMAIL_PASSWORD } =
-    process.env;
-
+const sendEmail = async options => {
+  // 1) Create a transporter
   const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST,
-    port: EMAIL_PORT,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
     auth: {
-      user: EMAIL_USERNAME,
-      pass: EMAIL_PASSWORD,
-    },
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD
+    }
   });
 
-  // 2. define email options
-  const { email, subject, message } = options;
+  // 2) Define the email options
   const mailOptions = {
-    from: 'Khaya Mnyandu <khaya@email.com>',
-    to: email,
-    subject,
-    text:message,
+    from: 'Jonas Schmedtmann <hello@jonas.io>',
+    to: options.email,
+    subject: options.subject,
+    text: options.message
+    // html:
   };
 
-  // 3. send email
+  // 3) Actually send the email
   await transporter.sendMail(mailOptions);
 };
 
