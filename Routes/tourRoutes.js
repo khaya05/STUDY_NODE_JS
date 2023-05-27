@@ -1,14 +1,14 @@
 const express = require('express');
-const tourController = require('../Controllers/tourController');
-const authController = require('../Controllers/authController');
+const tourController = require("../Controllers/tourController");
+const authController = require("../Controllers/authController");
 
 const router = express.Router();
 
 // router.param('id', tourController.checkID);
 
 router
-  .route('/popular')
-  .get(tourController.aliasPopular, tourController.getAllTours);
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
