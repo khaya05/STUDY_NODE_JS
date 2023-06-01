@@ -50,6 +50,7 @@ body {
   -ms-flex: 1;
   flex: 1;
   position: relative;
+  /* margin-bottom: 3rem; */
 }
 
 .flex {
