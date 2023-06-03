@@ -26,6 +26,7 @@ const createSendToken = (user, statusCode, res) => {
 
   // Remove password from output
   user.password = undefined;
+  user.passwordConfirm = undefined;
 
   res.status(statusCode).json({
     status: 'success',
@@ -66,7 +67,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = (req, res) => {
-  res.cookie('jwt', 'loggedOut', {
+  res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
   });
@@ -140,7 +141,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // THERE IS A LOGGED IN USER
-      res.locals.user = currentUser; // passing data to pug
+      res.locals.user = currentUser;
       return next();
     } catch (err) {
       return next();
